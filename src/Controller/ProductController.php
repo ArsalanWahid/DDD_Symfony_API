@@ -16,18 +16,20 @@ class ProductController extends AbstractController
      */
     public function index(): Response
     {
-        $products = $this->getDoctrine()->getRepository(Product::class)->findAll();
-        return $this->json($products);
+        $products = $this->getDoctrine()->getRepository(Product::class)->find(1);
+        return $this->json($products->getName());
     }
 
     public function create(Request $request): Response
     {
+        $product_name = isset($_REQUEST['product']) ? $_REQUEST['product'] : '';
+        $product_price = isset($_REQUEST['price']) ? $_REQUEST['price'] : '';
         $entityManager = $this->getDoctrine()->getManager();
         $product = new Product();
-        $product->setName("lotion");
-        $product->setPrice("10");
+        $product->setName($product_name);
+        $product->setPrice($product_price);
         $entityManager->persist($product);
         $entityManager->flush();
-        return $this->json($product);
+        return $this->json("Product received".$product_name.$product_price);
     }
 }
